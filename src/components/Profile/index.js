@@ -1,9 +1,9 @@
 import React from "react";
 
-import { AuthConsumer } from "../authContext";
+import { Auth } from "../../context";
 
 const Profile = () => (
-  <AuthConsumer>
+  <Auth.Consumer>
     {({ user }) => (
       <div>
         <h2>User Profile</h2>
@@ -14,7 +14,7 @@ const Profile = () => (
         </ul>
       </div>
     )}
-  </AuthConsumer>
+  </Auth.Consumer>
 );
 
 export default Profile;

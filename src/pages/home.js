@@ -1,24 +1,14 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
-import { AuthConsumer } from "../authContext";
-import Login from "../components/Login";
-import PostsList from "../components/PostsList";
+import { Auth } from "../context";
 
 const HomePage = () => (
-  <AuthConsumer>
-    {({ authenticated }) =>
-      authenticated ? (
-        <Redirect to="/dashboard" />
-      ) : (
-        <div>
-          <h2>Welcome to React RBAC Tutorial.</h2>
-          <Login />
-          <PostsList />
-        </div>
-      )
+  <Auth.Consumer>
+    {({ isLoggedIn }) =>
+      isLoggedIn ? <Redirect to="/dashboard" /> : <Redirect to="/auth" />
     }
-  </AuthConsumer>
+  </Auth.Consumer>
 );
 
 export default HomePage;

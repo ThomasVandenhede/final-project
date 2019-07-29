@@ -1,30 +1,46 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
+import axios from "axios";
 
-import { AuthConsumer } from "../authContext";
-import Can from "../components/Can";
-import Logout from "../components/Logout";
-import Profile from "../components/Profile";
-import PostsList from "../components/PostsList";
+import PostForm from "../components/PostForm";
+import PostList from "../components/PostList";
+import { Auth } from "../context";
 
-const DashboardPage = () => (
-  <AuthConsumer>
-    {({ user }) => (
-      <Can
-        role={user.role}
-        perform="dashboard-page:visit"
-        yes={() => (
+class DashboardPage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      posts: [],
+      isLoading: false
+    };
+  }
+
+  componentDidMount() {
+    this.setState({
+      isLoading: true
+    });
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/posts`)
+      .then(res => {
+        this.setState({ posts: res.data.rows });
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .finally(this.setState({ isLoading: false }));
+  }
+
+  render() {
+    return (
+      <Auth.Consumer>
+        {({ user }) => (
           <div>
-            <h1>Dashboard</h1>
-            <Logout />
-            <Profile />
-            <PostsList />
+            <PostForm />
+            <PostList posts={this.state.posts} />
           </div>
         )}
-        no={() => <Redirect to="/" />}
-      />
-    )}
-  </AuthConsumer>
-);
+      </Auth.Consumer>
+    );
+  }
+}
 
 export default DashboardPage;
