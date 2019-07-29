@@ -11,6 +11,7 @@ import {
 import { IndexLinkContainer, LinkContainer } from "react-router-bootstrap";
 import NavLink from "react-bootstrap/NavLink";
 
+import UserLink from "../UserLink";
 import { Auth } from "../../context";
 
 const Navigation = props => (
@@ -48,12 +49,7 @@ const Navigation = props => (
 
           {isLoggedIn && (
             <NavDropdown
-              title={
-                <>
-                  <img src={user.picture} alt="user avatar" />
-                  <span>{user.username}</span>
-                </>
-              }
+              title={<UserLink user={user} />}
               id="basic-nav-dropdown"
             >
               <LinkContainer to="/profile">
