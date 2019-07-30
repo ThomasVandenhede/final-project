@@ -16,9 +16,6 @@ class AuthPage extends Component {
             <Redirect to="/dashboard" />
           ) : (
             <div>
-              <h2>Connectez-vous ou Inscrivez-vous</h2>
-
-              <h3>Connexion</h3>
               <Tabs defaultActiveKey="login" id="uncontrolled-tab-example">
                 <Tab eventKey="login" title="Connexion">
                   <LoginForm login={login} />

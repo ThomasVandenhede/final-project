@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 import { Form, Button } from "react-bootstrap";
 
@@ -20,6 +21,7 @@ class LoginForm extends Component {
 
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
+      return;
     }
     this.setState({
       validated: true
@@ -30,7 +32,11 @@ class LoginForm extends Component {
 
   render() {
     return (
-      <Form validated={this.state.validated} onSubmit={this.handleSubmit}>
+      <Form
+        style={{ padding: "1rem", backgroundColor: "white" }}
+        validated={this.state.validated}
+        onSubmit={this.handleSubmit}
+      >
         <Form.Group controlId="formBasicEmail">
           <Form.Label>Email</Form.Label>
           <Form.Control
@@ -48,8 +54,6 @@ class LoginForm extends Component {
         <Form.Group controlId="formBasicPassword">
           <Form.Label>Mot de Passe</Form.Label>
           <Form.Control
-            isInvalid="true"
-            isValid="true"
             type="password"
             placeholder="Votre mot de passe"
             value={this.state.formData.password}
@@ -63,7 +67,13 @@ class LoginForm extends Component {
             }}
           />
         </Form.Group>
-        <Button variant="primary" type="submit" onSubmit={this.handleSubmit}>
+        <Form.Group>
+          <Form.Text className="text-muted">
+            <Link to="/forgot-password">Mot de passe oublié ?</Link>
+          </Form.Text>
+        </Form.Group>
+
+        <Button type="submit" variant="primary">
           Connexion
         </Button>
       </Form>

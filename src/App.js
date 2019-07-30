@@ -7,6 +7,8 @@ import ChatPage from "./pages/chat";
 import DashboardPage from "./pages/dashboard";
 import ProfilePage from "./pages/profile";
 import AuthPage from "./pages/auth";
+import ForgotPasswordPage from "./pages/forgot-password";
+import PasswordResetPage from "./pages/password-reset";
 import { Auth } from "./context";
 
 import Header from "./components/Header";
@@ -22,6 +24,8 @@ const App = () => (
           <div className="jumbotron container">
             <Switch>
               <Route exact path="/" component={HomePage} />
+              <Route path="/forgot-password" component={ForgotPasswordPage} />
+              <Route path="/password-reset" component={PasswordResetPage} />
               <Route path="/dashboard" component={DashboardPage} />
               <Route path="/profile" component={ProfilePage} />
               <Route path="/about" component={AboutPage} />

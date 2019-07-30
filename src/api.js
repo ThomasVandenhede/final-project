@@ -34,3 +34,22 @@ export const fetchUsers = ({ token }) => {
     token
   });
 };
+
+export const sendPasswordResetEmail = email => {
+  return axios.post(
+    `${process.env.REACT_APP_API_URL}/password-resets`,
+    { email, link: `${window.location.origin}/password-reset` },
+    {
+      headers: { Authorization: `Bearer ${process.env.REACT_APP_API_KEY}` }
+    }
+  );
+};
+
+export const resetPassword = ({ password, token }) => {
+  return axios.put(
+    `${process.env.REACT_APP_API_URL}/password-resets/${token}`,
+    {
+      password
+    }
+  );
+};

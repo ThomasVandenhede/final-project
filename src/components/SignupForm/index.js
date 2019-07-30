@@ -30,10 +30,12 @@ class SignupForm extends Component {
   }
 
   render() {
-    console.log(this.state);
-
     return (
-      <Form validated={this.state.validated} onSubmit={this.handleSubmit}>
+      <Form
+        style={{ padding: "1rem", backgroundColor: "white" }}
+        validated={this.state.validated}
+        onSubmit={this.handleSubmit}
+      >
         <Form.Group controlId="formBasicUsername">
           <Form.Label>Nom d'utilisateur</Form.Label>
           <Form.Control
@@ -99,7 +101,7 @@ class SignupForm extends Component {
             }}
           />
         </Form.Group>
-        <Button variant="primary" type="submit" onSubmit={this.handleSubmit}>
+        <Button type="submit" variant="primary">
           Inscription
         </Button>
       </Form>
