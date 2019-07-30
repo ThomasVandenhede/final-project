@@ -30,14 +30,9 @@ class LoginForm extends React.Component {
 
   render() {
     return (
-      <Form
-        validated="true"
-        action={`${process.env.REACT_APP_API_URL}/auth`}
-        method="POST"
-        onSubmit={this.handleSubmit}
-      >
+      <Form validated={this.state.validated} onSubmit={this.handleSubmit}>
         <Form.Group controlId="formBasicEmail">
-          <Form.Label>Adresse email</Form.Label>
+          <Form.Label>Email</Form.Label>
           <Form.Control
             type="email"
             placeholder="Votre email"
