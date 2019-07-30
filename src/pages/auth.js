@@ -11,7 +11,7 @@ class AuthPage extends React.Component {
   render() {
     return (
       <Auth.Consumer>
-        {({ isLoggedIn, login }) =>
+        {({ isLoggedIn, login, signup }) =>
           isLoggedIn ? (
             <Redirect to="/dashboard" />
           ) : (
@@ -25,7 +25,7 @@ class AuthPage extends React.Component {
                 </Tab>
 
                 <Tab eventKey="signup" title="Inscription">
-                  <SignupForm />
+                  <SignupForm signup={signup} />
                 </Tab>
               </Tabs>
             </div>

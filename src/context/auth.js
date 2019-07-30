@@ -5,8 +5,8 @@ const AuthContext = createContext({
   isLoggedIn: false, // to check if isLoggedIn or not
   user: {}, // store all the user details
   token: "", // token of user
-  login: () => {}, // to start the login process
-  handleAuthentication: () => {}, // handle login process
+  login: () => {}, // start login process
+  signup: () => {}, // start signup process
   logout: () => {} // logout the user
 });
 
@@ -36,9 +36,22 @@ class AuthProvider extends Component {
     });
   };
 
+  signup = data => {
+    return api.createUser(data).then(res => {
+      const { user, token } = res.data;
+
+      const auth = {
+        isLoggedIn: true,
+        user,
+        token
+      };
+      localStorage.setItem("auth", JSON.stringify(auth, (key, value) => value));
+      this.setState(auth);
+    });
+  };
+
   logout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
+    localStorage.removeItem("auth");
 
     this.setState({
       isLoggedIn: false,
@@ -55,6 +68,7 @@ class AuthProvider extends Component {
         value={{
           ...this.state,
           login: this.login,
+          signup: this.signup,
           logout: this.logout
         }}
       >

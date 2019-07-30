@@ -13,3 +13,10 @@ export const login = data => {
     }
   );
 };
+
+export const createUser = data => {
+  return axios.post(`${process.env.REACT_APP_API_URL}/users`, {
+    access_token: process.env.REACT_APP_API_KEY,
+    ...data
+  });
+};
