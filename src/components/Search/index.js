@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import { FormControl, InputGroup } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -7,7 +7,7 @@ import SearchSuggestions from "./SearchSuggestions";
 import { Auth } from "../../context";
 import * as api from "../../api";
 
-class Search extends React.Component {
+class Search extends Component {
   constructor(props) {
     super(props);
 

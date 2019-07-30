@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import { Tabs, Tab } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 
@@ -7,7 +7,7 @@ import SignupForm from "../components/SignupForm";
 
 import { Auth } from "../context";
 
-class AuthPage extends React.Component {
+class AuthPage extends Component {
   render() {
     return (
       <Auth.Consumer>

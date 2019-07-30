@@ -1,8 +1,8 @@
-import React from "react";
+import React, { Component } from "react";
 
 import { Form, Button } from "react-bootstrap";
 
-class LoginForm extends React.Component {
+class LoginForm extends Component {
   constructor(props) {
     super(props);
     this.state = {

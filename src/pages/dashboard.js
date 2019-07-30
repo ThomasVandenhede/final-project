@@ -1,11 +1,12 @@
-import React from "react";
+import React, { Component } from "react";
 import axios from "axios";
+import { withRouter } from "react-router-dom";
 
 import PostForm from "../components/PostForm";
 import PostList from "../components/PostList";
 import { Auth } from "../context";
 
-class DashboardPage extends React.Component {
+class DashboardPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
