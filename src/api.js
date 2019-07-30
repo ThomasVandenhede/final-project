@@ -20,3 +20,16 @@ export const createUser = data => {
     ...data
   });
 };
+
+export const fetchWithToken = ({ url, token }) => {
+  return axios.get(url, {
+    access_token: token
+  });
+};
+
+export const fetchUsersWithToken = token => {
+  return fetchWithToken({
+    url: `${process.env.REACT_APP_API_URL}/users`,
+    token
+  });
+};

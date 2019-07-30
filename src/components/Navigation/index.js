@@ -4,14 +4,14 @@ import {
   Navbar,
   Nav,
   NavDropdown,
-  Form,
   FormControl,
-  Button
+  InputGroup
 } from "react-bootstrap";
 import { IndexLinkContainer, LinkContainer } from "react-router-bootstrap";
 import NavLink from "react-bootstrap/NavLink";
 
 import UserLink from "../UserLink";
+import Search from "../Search";
 import { Auth } from "../../context";
 
 const Navigation = props => (
@@ -27,25 +27,16 @@ const Navigation = props => (
             <IndexLinkContainer to="/">
               <NavLink>Accueil</NavLink>
             </IndexLinkContainer>
-            <LinkContainer to="/about">
-              <NavLink>À Propos</NavLink>
-            </LinkContainer>
             {isLoggedIn && (
               <LinkContainer to="/chat">
                 <NavLink>Chat</NavLink>
               </LinkContainer>
             )}
+            <LinkContainer to="/about">
+              <NavLink>À Propos</NavLink>
+            </LinkContainer>
           </Nav>
-          {isLoggedIn && (
-            <Form inline>
-              <FormControl
-                type="text"
-                placeholder="Search"
-                className="mr-sm-2"
-              />
-              <Button variant="outline-success">Search</Button>
-            </Form>
-          )}
+          {isLoggedIn && <Search />}
 
           {isLoggedIn && (
             <NavDropdown
@@ -58,9 +49,11 @@ const Navigation = props => (
               <LinkContainer to="/friends">
                 <NavDropdown.Item>Mes amis</NavDropdown.Item>
               </LinkContainer>
-              <LinkContainer to="/admin">
-                <NavDropdown.Item>Admin</NavDropdown.Item>
-              </LinkContainer>
+              {user.role === "admin" && (
+                <LinkContainer to="/admin">
+                  <NavDropdown.Item>Admin</NavDropdown.Item>
+                </LinkContainer>
+              )}
               <NavDropdown.Divider />
               <NavDropdown.Item
                 onClick={() => {
