@@ -1,10 +1,6 @@
 import React from "react";
 
-import * as S from "./styles";
-
-const UserAvatar = ({ user }) => (
-  <S.Avatar src={user.picture} height="40" width="40" alt="user avatar" />
-);
+import UserAvatar from "../UserAvatar";
 
 const UserLink = ({ user }) => (
   <>
