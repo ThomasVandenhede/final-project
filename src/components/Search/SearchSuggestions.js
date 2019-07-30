@@ -35,7 +35,7 @@ const SearchSuggestions = ({ users }) => (
     <UserList>
       {users.map(user => (
         <UserListItem key={user.id}>
-          <Link to={user.id}>
+          <Link to={`/${user.id}`}>
             <UserAvatar user={user} size={30} />
             {user.username}
           </Link>

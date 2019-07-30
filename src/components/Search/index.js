@@ -17,15 +17,15 @@ class Search extends React.Component {
   }
 
   handleBlur = event => {
-    this.setState({
-      users: []
-    });
+    // this.setState({
+    //   users: []
+    // });
   };
 
   handleFocus = event => {
     const { token, user: me } = this.context;
 
-    api.fetchUsersWithToken(token).then(res => {
+    api.fetchUsers({ token }).then(res => {
       if (res.data && res.data.length) {
         const filteredUsers = res.data.filter(user => user.id !== me.id);
         this.setState({ users: filteredUsers });
