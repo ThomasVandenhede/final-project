@@ -23,27 +23,29 @@ class Search extends React.Component {
   };
 
   handleFocus = event => {
-    const { token } = this.context;
-    console.log("TCL: Search -> token", token);
+    const { token, user: me } = this.context;
 
     api.fetchUsersWithToken(token).then(res => {
       if (res.data && res.data.length) {
-        this.setState({ users: res.data });
+        const filteredUsers = res.data.filter(user => user.id !== me.id);
+        this.setState({ users: filteredUsers });
       }
     });
   };
 
   render() {
     return (
-      <div style={{ maxWidth: 300 }}>
+      <div
+        style={{ maxWidth: 300 }}
+        onFocus={this.handleFocus}
+        onBlur={this.handleBlur}
+      >
         <InputGroup>
           <FormControl
             type="text"
             placeholder="Input group example"
             aria-label="Input group example"
             aria-describedby="btnGroupAddon"
-            onFocus={this.handleFocus}
-            onBlur={this.handleBlur}
           />
           <InputGroup.Append>
             <InputGroup.Text id="btnGroupAddon">

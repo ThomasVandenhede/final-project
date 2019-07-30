@@ -2,6 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
+import UserAvatar from "../UserAvatar";
+
 const UserListContainer = styled.div`
   position: absolute;
   top: 100%;
@@ -9,7 +11,7 @@ const UserListContainer = styled.div`
   background-color: white;
   border: 1px solid #ced4da;
   border-top: none;
-  padding: 0.5rem;
+  padding: 1rem;
   height: 400px;
   overflow-y: auto;
 `;
@@ -20,15 +22,24 @@ const UserList = styled.ul`
   list-style: none;
 `;
 
+const UserListItem = styled.li`
+  display: flex;
+  align-items: center;
+  height: 40px;
+`;
+
 const SearchSuggestions = ({ users }) => (
   <UserListContainer>
-    <p>Utilisateurs</p>
+    <h4>Utilisateurs</h4>
 
     <UserList>
       {users.map(user => (
-        <li key={user.id}>
-          <Link to={user.id}>{user.username}</Link>
-        </li>
+        <UserListItem key={user.id}>
+          <Link to={user.id}>
+            <UserAvatar user={user} size={30} />
+            {user.username}
+          </Link>
+        </UserListItem>
       ))}
     </UserList>
   </UserListContainer>
