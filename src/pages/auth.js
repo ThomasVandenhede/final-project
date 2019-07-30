@@ -11,9 +11,9 @@ class AuthPage extends Component {
   render() {
     return (
       <Auth.Consumer>
-        {({ isLoggedIn, login, signup }) =>
+        {({ currentUser, isLoggedIn, login, signup }) =>
           isLoggedIn ? (
-            <Redirect to="/dashboard" />
+            <Redirect to={`/users/${currentUser.id}`} />
           ) : (
             <div>
               <Tabs defaultActiveKey="login" id="uncontrolled-tab-example">

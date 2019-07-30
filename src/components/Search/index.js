@@ -12,7 +12,8 @@ class Search extends Component {
     super(props);
 
     this.state = {
-      users: []
+      users: [],
+      loading: false
     };
   }
 
@@ -23,14 +24,22 @@ class Search extends Component {
   };
 
   handleFocus = event => {
-    const { token, user: me } = this.context;
+    const { token, currentUser: me } = this.context;
 
-    api.fetchUsers({ token }).then(res => {
-      if (res.data && res.data.length) {
-        const filteredUsers = res.data.filter(user => user.id !== me.id);
-        this.setState({ users: filteredUsers });
-      }
-    });
+    this.setState({ loading: true });
+
+    api
+      .fetchUsers({ token })
+      .then(res => {
+        if (res.data && res.data.length) {
+          const filteredUsers = res.data.filter(user => user.id !== me.id);
+          this.setState({ users: filteredUsers });
+        }
+      })
+      .catch(err => console.log(err))
+      .finally(() => {
+        this.setState({ loading: false });
+      });
   };
 
   render() {
@@ -43,8 +52,8 @@ class Search extends Component {
         <InputGroup>
           <FormControl
             type="text"
-            placeholder="Input group example"
-            aria-label="Input group example"
+            placeholder="Rechercher des membres"
+            aria-label="Rechercher des membres"
             aria-describedby="btnGroupAddon"
           />
           <InputGroup.Append>
@@ -52,9 +61,11 @@ class Search extends Component {
               <FontAwesomeIcon icon={faSearch} />
             </InputGroup.Text>
           </InputGroup.Append>
-          {!!this.state.users.length && (
-            <SearchSuggestions users={this.state.users} />
-          )}
+
+          <SearchSuggestions
+            users={this.state.users}
+            loading={this.state.loading}
+          />
         </InputGroup>
       </div>
     );

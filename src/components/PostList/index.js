@@ -5,11 +5,11 @@ import Post from "../Post";
 
 const PostList = ({ posts }) =>
   posts.length ? (
-    <ul>
+    <div>
       {posts.map(post => (
-        <Post post={post} />
+        <Post key={post.id} post={post} />
       ))}
-    </ul>
+    </div>
   ) : (
     <div>Aucune publication à afficher.</div>
   );

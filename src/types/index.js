@@ -1,5 +1,5 @@
 // types/index.js
-import { shape, number, string, oneOf, date } from "prop-types";
+import { shape, number, string, oneOf } from "prop-types";
 
 export const userType = shape({
   id: number,
@@ -9,7 +9,5 @@ export const userType = shape({
 });
 
 export const postType = shape({
-  content: string.isRequired,
-  author: shape({}),
-  timestamp: date
+  body: string.isRequired
 });

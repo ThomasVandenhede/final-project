@@ -12,8 +12,11 @@ const UserListContainer = styled.div`
   border: 1px solid #ced4da;
   border-top: none;
   padding: 1rem;
-  height: 400px;
+  min-height: 50px;
+  max-height: 300px;
   overflow-y: auto;
+  z-index: 1;
+  box-shadow: 1px 3px 20px 0 rgba(0, 0, 0, 0.1);
 `;
 
 const UserList = styled.ul`
@@ -28,14 +31,14 @@ const UserListItem = styled.li`
   height: 40px;
 `;
 
-const SearchSuggestions = ({ users }) => (
+const SearchSuggestions = ({ users, loading }) => (
   <UserListContainer>
     <h4>Utilisateurs</h4>
 
     <UserList>
       {users.map(user => (
         <UserListItem key={user.id}>
-          <Link to={`/${user.id}`}>
+          <Link to={`/users/${user.id}`}>
             <UserAvatar user={user} size={30} />
             {user.username}
           </Link>

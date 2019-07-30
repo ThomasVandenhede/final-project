@@ -3,11 +3,11 @@ import * as api from "../api";
 
 const AuthContext = createContext({
   isLoggedIn: false, // to check if isLoggedIn or not
-  user: {}, // store all the user details
-  token: "", // token of user
+  currentUser: {}, // store all the current user details
+  token: "", // token of current user
   login: () => {}, // start login process
   signup: () => {}, // start signup process
-  logout: () => {} // logout the user
+  logout: () => {} // logout the current user
 });
 
 class AuthProvider extends Component {
@@ -15,7 +15,7 @@ class AuthProvider extends Component {
     super(props);
     this.state = JSON.parse(localStorage.getItem("auth")) || {
       isLoggedIn: false,
-      user: {
+      currentUser: {
         role: "visitor"
       },
       token: ""
@@ -24,11 +24,11 @@ class AuthProvider extends Component {
 
   login = data => {
     return api.login(data).then(res => {
-      const { user, token } = res.data;
+      const { user: currentUser, token } = res.data;
 
       const auth = {
         isLoggedIn: true,
-        user,
+        currentUser,
         token
       };
       localStorage.setItem("auth", JSON.stringify(auth, (key, value) => value));
@@ -42,7 +42,7 @@ class AuthProvider extends Component {
 
       const auth = {
         isLoggedIn: true,
-        user,
+        currentUser: user,
         token
       };
       localStorage.setItem("auth", JSON.stringify(auth, (key, value) => value));
@@ -55,7 +55,7 @@ class AuthProvider extends Component {
 
     this.setState({
       isLoggedIn: false,
-      user: {
+      currentUser: {
         role: "visitor"
       },
       token: ""

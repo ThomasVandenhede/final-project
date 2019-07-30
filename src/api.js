@@ -1,7 +1,7 @@
 import axios from "axios";
 
-export const login = data => {
-  return axios.post(
+export const login = data =>
+  axios.post(
     `${process.env.REACT_APP_API_URL}/auth`,
     {
       access_token: process.env.REACT_APP_API_KEY
@@ -12,14 +12,12 @@ export const login = data => {
       }
     }
   );
-};
 
-export const createUser = data => {
-  return axios.post(`${process.env.REACT_APP_API_URL}/users`, {
+export const createUser = data =>
+  axios.post(`${process.env.REACT_APP_API_URL}/users`, {
     access_token: process.env.REACT_APP_API_KEY,
     ...data
   });
-};
 
 export const fetchWithToken = ({ url, token }) =>
   axios.get(url, {
@@ -28,28 +26,44 @@ export const fetchWithToken = ({ url, token }) =>
     }
   });
 
-export const fetchUsers = ({ token }) => {
-  return fetchWithToken({
+export const fetchUsers = ({ token }) =>
+  fetchWithToken({
     url: `${process.env.REACT_APP_API_URL}/users`,
+    token
+  });
+
+export const searchUsers = ({ token, q }) => {
+  const url = `${process.env.REACT_APP_API_URL}/users?q=${q}`;
+
+  return fetchWithToken({
+    url,
     token
   });
 };
 
-export const sendPasswordResetEmail = email => {
-  return axios.post(
+export const sendPasswordResetEmail = email =>
+  axios.post(
     `${process.env.REACT_APP_API_URL}/password-resets`,
     { email, link: `${window.location.origin}/password-reset` },
     {
       headers: { Authorization: `Bearer ${process.env.REACT_APP_API_KEY}` }
     }
   );
-};
 
-export const resetPassword = ({ password, token }) => {
-  return axios.put(
-    `${process.env.REACT_APP_API_URL}/password-resets/${token}`,
-    {
-      password
-    }
-  );
-};
+export const resetPassword = ({ password, token }) =>
+  axios.put(`${process.env.REACT_APP_API_URL}/password-resets/${token}`, {
+    password
+  });
+
+export const fetchUser = userId =>
+  axios.get(`${process.env.REACT_APP_API_URL}/users/${userId}`);
+
+export const fetchUserPosts = userId =>
+  axios.get(`${process.env.REACT_APP_API_URL}/users/${userId}/posts`);
+
+export const createPost = ({ userId, authorId, body }) =>
+  axios.post(`${process.env.REACT_APP_API_URL}/posts`, {
+    body,
+    userId,
+    authorId
+  });

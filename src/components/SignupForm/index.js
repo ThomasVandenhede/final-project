@@ -1,12 +1,19 @@
 import React, { Component } from "react";
 
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Col } from "react-bootstrap";
 
 class SignupForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      formData: { email: "", username: "", password: "", passwordConfirm: "" },
+      formData: {
+        firstName: "",
+        lastName: "",
+        username: "",
+        email: "",
+        password: "",
+        gender: ""
+      },
       validated: false
     };
 
@@ -20,12 +27,17 @@ class SignupForm extends Component {
     event.stopPropagation();
 
     const form = event.currentTarget;
+
     if (form.checkValidity() === false) {
     }
     this.setState({
       validated: true
     });
 
+    console.log(
+      "TCL: SignupForm -> handleSubmit -> this.state.formData",
+      this.state.formData
+    );
     this.props.signup(this.state.formData);
   }
 
@@ -36,9 +48,48 @@ class SignupForm extends Component {
         validated={this.state.validated}
         onSubmit={this.handleSubmit}
       >
+        <Form.Row>
+          <Form.Group as={Col} controlId="formGridCity">
+            <Form.Label>Prénom</Form.Label>
+            <Form.Control
+              required
+              type="text"
+              placeholder="Votre prénom"
+              value={this.state.formData.firstName}
+              onChange={event =>
+                this.setState({
+                  formData: {
+                    ...this.state.formData,
+                    firstName: event.target.value
+                  }
+                })
+              }
+            />
+          </Form.Group>
+
+          <Form.Group as={Col} controlId="formGridState">
+            <Form.Label>Nom</Form.Label>
+            <Form.Control
+              required
+              type="text"
+              placeholder="Votre nom"
+              value={this.state.formData.lastName}
+              onChange={event =>
+                this.setState({
+                  formData: {
+                    ...this.state.formData,
+                    lastName: event.target.value
+                  }
+                })
+              }
+            />
+          </Form.Group>
+        </Form.Row>
+
         <Form.Group controlId="formBasicUsername">
           <Form.Label>Nom d'utilisateur</Form.Label>
           <Form.Control
+            required
             type="text"
             placeholder="Votre nom d'utilisateur"
             value={this.state.formData.username}
@@ -55,6 +106,7 @@ class SignupForm extends Component {
         <Form.Group controlId="formBasicEmail">
           <Form.Label>Email</Form.Label>
           <Form.Control
+            required
             type="email"
             placeholder="Votre email"
             value={this.state.formData.email}
@@ -69,9 +121,10 @@ class SignupForm extends Component {
           />
         </Form.Group>
 
-        <Form.Group controlId="formBasicPassword">
+        <Form.Group>
           <Form.Label>Mot de passe</Form.Label>
           <Form.Control
+            required
             type="password"
             placeholder="Votre mot de passe"
             value={this.state.formData.password}
@@ -85,21 +138,45 @@ class SignupForm extends Component {
             }}
           />
         </Form.Group>
-        <Form.Group controlId="formBasicPasswordConfirmation">
-          <Form.Label>Répéter mot de passe</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Votre mot de passe"
-            value={this.state.formData.passwordConfirm}
-            onChange={event => {
-              this.setState({
-                formData: {
-                  ...this.state.formData,
-                  passwordConfirm: event.target.value
-                }
-              });
-            }}
-          />
+
+        <Form.Group>
+          <Form.Label>Sexe</Form.Label>
+          <div key="inline-radio" className="mb-3">
+            <Form.Check
+              required
+              inline
+              type="radio"
+              label="Femme"
+              name="gender"
+              id="female"
+              onChange={event =>
+                this.setState({
+                  formData: {
+                    ...this.state.formData,
+                    gender: "female"
+                  }
+                })
+              }
+              value={this.state.formData.gender}
+            />
+            <Form.Check
+              required
+              inline
+              type="radio"
+              label="Homme"
+              name="gender"
+              id="male"
+              onChange={event =>
+                this.setState({
+                  formData: {
+                    ...this.state.formData,
+                    gender: "male"
+                  }
+                })
+              }
+              value={this.state.formData.gender}
+            />
+          </div>
         </Form.Group>
         <Button type="submit" variant="primary">
           Inscription

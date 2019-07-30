@@ -3,16 +3,18 @@ import { Redirect } from "react-router-dom";
 
 import { Auth } from "../context";
 
-const HomePage = () => (
+const SettingsPage = () => (
   <Auth.Consumer>
-    {({ currentUser, isLoggedIn }) =>
+    {({ isLoggedIn }) =>
       isLoggedIn ? (
-        <Redirect to={`/users/${currentUser.id}`} />
+        <div>
+          <h2>settings</h2>
+        </div>
       ) : (
-        <Redirect to="/auth" />
+        <Redirect to="/" />
       )
     }
   </Auth.Consumer>
 );
 
-export default HomePage;
+export default SettingsPage;
