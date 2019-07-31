@@ -65,7 +65,7 @@ class ChatPage extends Component {
       <Auth.Consumer>
         {({ currentUser }) => (
           <div>
-            <h2>Bienvenue sur le Chat</h2>
+            <h2>Bienvenue sur le Tchat</h2>
 
             <div className="row">
               <div className="col-4">
