@@ -1,8 +1,10 @@
 import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 
 import { Form, Button } from "react-bootstrap";
 import * as api from "../api";
 import InformationModal from "../components/InformationModal";
+import { Auth } from "../context";
 
 class ForgotPasswordPage extends Component {
   constructor(props) {
@@ -36,44 +38,56 @@ class ForgotPasswordPage extends Component {
 
   render() {
     return (
-      <>
-        <InformationModal
-          show={this.state.modalShow}
-          onHide={() => this.setState({ modalShow: false })}
-          title="Email de confirmation envoyé"
-          content={
+      <Auth.Consumer>
+        {({ isLoggedIn, currentUser }) =>
+          isLoggedIn ? (
+            <Redirect to={`/users/${currentUser.id}`} />
+          ) : (
             <>
-              Un email contenant un lien de réinitialisation de votre mot de
-              passe vient de vous être envoyé à l'adresse{" "}
-              <strong>{this.state.email}</strong>
-            </>
-          }
-        />
-        <Form validated={this.state.validated} onSubmit={this.handleSubmit}>
-          <Form.Group controlId="formBasicEmail">
-            <Form.Label>
-              Entrez l'adresse email avec laquelle vous vous êtes inscrit pour
-              recevoir le lien de réinitialisation de votre mot de passe
-            </Form.Label>
-            <Form.Control
-              type="email"
-              required
-              placeholder="Votre email"
-              value={this.state.email}
-              onChange={event => {
-                this.setState({ email: event.target.value });
-              }}
-            />
-            <Form.Control.Feedback type="invalid">
-              L'adresse saisie n'existe pas
-            </Form.Control.Feedback>
-          </Form.Group>
+              <InformationModal
+                show={this.state.modalShow}
+                onHide={() => this.setState({ modalShow: false })}
+                title="Email de confirmation envoyé"
+                content={
+                  <>
+                    Un email contenant un lien de réinitialisation de votre mot
+                    de passe vient de vous être envoyé à l'adresse{" "}
+                    <strong>{this.state.email}</strong>
+                  </>
+                }
+              />
+              <Form
+                validated={this.state.validated}
+                onSubmit={this.handleSubmit}
+              >
+                <Form.Group controlId="formBasicEmail">
+                  <Form.Label>
+                    Entrez l'adresse email avec laquelle vous vous êtes inscrit
+                    pour recevoir le lien de réinitialisation de votre mot de
+                    passe
+                  </Form.Label>
+                  <Form.Control
+                    type="email"
+                    required
+                    placeholder="Votre email"
+                    value={this.state.email}
+                    onChange={event => {
+                      this.setState({ email: event.target.value });
+                    }}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    L'adresse saisie n'existe pas
+                  </Form.Control.Feedback>
+                </Form.Group>
 
-          <Button type="submit" variant="primary">
-            Envoyer
-          </Button>
-        </Form>
-      </>
+                <Button type="submit" variant="primary">
+                  Envoyer
+                </Button>
+              </Form>
+            </>
+          )
+        }
+      </Auth.Consumer>
     );
   }
 }
