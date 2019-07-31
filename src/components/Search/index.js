@@ -15,7 +15,6 @@ class Search extends Component {
 
     this.state = {
       users: [],
-      loading: false,
       showSuggestions: false
     };
   }
@@ -50,7 +49,7 @@ class Search extends Component {
   handleFocus = event => {
     const { token, currentUser: me } = this.context;
 
-    this.setState({ loading: true, showSuggestions: true });
+    this.setState({ showSuggestions: true });
 
     api
       .fetchUsers({ token })
@@ -60,10 +59,20 @@ class Search extends Component {
           this.setState({ users: filteredUsers });
         }
       })
-      .catch(err => console.log(err))
-      .finally(() => {
-        this.setState({ loading: false });
+      .catch(err => console.debug(err));
+  };
+
+  search = event => {
+    const q = event.target.value;
+    const { token } = this.context;
+
+    api.searchUsers({ q, token }).then(res => {
+      const users = res.data;
+      console.log("TCL: Search -> res.data", res.data);
+      this.setState({
+        users
       });
+    });
   };
 
   render() {
@@ -80,6 +89,7 @@ class Search extends Component {
             placeholder="Rechercher des membres"
             aria-label="Rechercher des membres"
             aria-describedby="btnGroupAddon"
+            onChange={this.search}
           />
           <InputGroup.Append>
             <InputGroup.Text id="btnGroupAddon">
@@ -91,7 +101,6 @@ class Search extends Component {
             <SearchSuggestions
               ref={this.suggestionsRef}
               users={this.state.users}
-              loading={this.state.loading}
               onSuggestionClick={this.hideSuggestions}
             />
           )}

@@ -33,16 +33,20 @@ const UserListItem = styled.li`
 
 const SearchSuggestions = ({ users, onSuggestionClick }) => (
   <UserListContainer>
-    <UserList>
-      {users.map(user => (
-        <UserListItem key={user.id}>
-          <Link to={`/users/${user.id}`} onClick={() => onSuggestionClick()}>
-            <UserAvatar user={user} size={30} />
-            {user.username}
-          </Link>
-        </UserListItem>
-      ))}
-    </UserList>
+    {users.length ? (
+      <UserList>
+        {users.map(user => (
+          <UserListItem key={user.id}>
+            <Link to={`/users/${user.id}`} onClick={() => onSuggestionClick()}>
+              <UserAvatar user={user} size={30} />
+              {user.username}
+            </Link>
+          </UserListItem>
+        ))}
+      </UserList>
+    ) : (
+      <span>Aucun membre trouvé</span>
+    )}
   </UserListContainer>
 );
 

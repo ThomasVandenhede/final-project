@@ -13,7 +13,6 @@ const ChatBox = ({
   <S.ChatBox>
     <S.ChatMessages>
       {messages.map(message => {
-        console.log(user.username === message.username);
         return (
           <S.ChatMessage
             key={message.createdAt}

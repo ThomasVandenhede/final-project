@@ -40,15 +40,6 @@ export const fetchUsers = ({ token }) =>
     token
   });
 
-export const searchUsers = ({ token, q }) => {
-  const url = `${process.env.REACT_APP_API_URL}/users?q=${q}`;
-
-  return fetchWithToken({
-    url,
-    token
-  });
-};
-
 export const sendPasswordResetEmail = email =>
   axios.post(
     `${process.env.REACT_APP_API_URL}/password-resets`,
@@ -78,3 +69,11 @@ export const createPost = ({ userId, authorId, body }) =>
 
 export const fetchChatMessages = () =>
   axios.get(`${process.env.REACT_APP_API_URL}/chat`);
+
+export const searchUsers = ({ q, token }) =>
+  axios.get(`${process.env.REACT_APP_API_URL}/users/search`, {
+    params: {
+      q,
+      access_token: token
+    }
+  });
