@@ -45,8 +45,8 @@ class PostForm extends Component {
             rows="2"
             placeholder={
               isMe
-                ? "Exprimez-vous"
-                : `Dites quelque chose à ${user.username}...`
+                ? "Exprime-toi..."
+                : `Dis quelque chose à ${user.username}...`
             }
             value={this.state.message}
             onChange={event => {
