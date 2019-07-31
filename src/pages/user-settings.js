@@ -32,7 +32,7 @@ class SettingsPage extends Component {
 
   handleSubmit(event) {
     const { currentUser, token, updateUser } = this.context;
-    console.log("TCL: SettingsPage -> handleSubmit -> updateUser", updateUser);
+
     event.preventDefault();
     event.stopPropagation();
 

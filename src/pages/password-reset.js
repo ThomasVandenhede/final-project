@@ -27,7 +27,6 @@ class PasswordResetPage extends Component {
     }
 
     api.resetPassword({ password: this.state.password, token }).then(res => {
-      console.log(res);
       this.setState({ modalShow: true });
     });
   };

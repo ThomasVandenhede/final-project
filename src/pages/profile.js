@@ -65,7 +65,7 @@ class ProfilePage extends Component {
         });
       })
       .catch(err => {
-        console.log(err);
+        console.debug(err);
       })
       .finally(this.setState({ loadingPosts: false }));
   };

@@ -32,10 +32,6 @@ class SignupForm extends Component {
       validated: true
     });
 
-    console.log(
-      "TCL: SignupForm -> handleSubmit -> this.state.formData",
-      this.state.formData
-    );
     this.props.signup(this.state.formData);
   }
 
