@@ -36,6 +36,25 @@ class AuthProvider extends Component {
     });
   };
 
+  updateUser = ({ data, userId, token }) => {
+    return api.updateUser({ data, userId, token }).then(res => {
+      const user = res.data;
+
+      const auth = JSON.parse(localStorage.getItem("auth"));
+      localStorage.setItem(
+        "auth",
+        JSON.stringify({
+          ...auth,
+          currentUser: user
+        })
+      );
+
+      this.setState({
+        currentUser: user
+      });
+    });
+  };
+
   signup = data => {
     return api.createUser(data).then(res => {
       const { user, token } = res.data;
@@ -69,7 +88,8 @@ class AuthProvider extends Component {
           ...this.state,
           login: this.login,
           signup: this.signup,
-          logout: this.logout
+          logout: this.logout,
+          updateUser: this.updateUser
         }}
       >
         {this.props.children}

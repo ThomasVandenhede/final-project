@@ -50,9 +50,9 @@ const Navigation = props => {
                   <LinkContainer to={`/users/${currentUser.id}`}>
                     <NavDropdown.Item>Mon profil</NavDropdown.Item>
                   </LinkContainer>
-                  <LinkContainer to="/friends">
+                  {/* <LinkContainer to="/friends">
                     <NavDropdown.Item>Mes amis</NavDropdown.Item>
-                  </LinkContainer>
+                  </LinkContainer> */}
                   <LinkContainer to="/settings">
                     <NavDropdown.Item>Paramètres</NavDropdown.Item>
                   </LinkContainer>

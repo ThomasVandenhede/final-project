@@ -31,11 +31,11 @@ const Profile = ({ user }) => (
         </Card.Body>
         <Card.Body>
           {!!(user.friends && user.friends.length) ? (
-            <Link to="/friends">Voir mes amis</Link>
+            ""
           ) : (
+            // <Link to="/friends">Voir mes amis</Link>
             <>
-              Découvre les <Link to="/search">autres membres</Link> et fais-toi
-              des amis :)
+              Découvre les <Link to="/search">autres membres</Link> :)
             </>
           )}
         </Card.Body>

@@ -20,8 +20,6 @@ class SignupForm extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentDidUpdate(state) {}
-
   handleSubmit(event) {
     event.preventDefault();
     event.stopPropagation();

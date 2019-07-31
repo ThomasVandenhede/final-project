@@ -26,6 +26,14 @@ export const fetchWithToken = ({ url, token }) =>
     }
   });
 
+export const updateWithToken = ({ data, url, token }) =>
+  axios.put(url, { ...data, access_token: token });
+
+export const updateUser = ({ data, userId, token }) => {
+  const url = `${process.env.REACT_APP_API_URL}/users/${userId}`;
+  return updateWithToken({ data, url, token });
+};
+
 export const fetchUsers = ({ token }) =>
   fetchWithToken({
     url: `${process.env.REACT_APP_API_URL}/users`,
