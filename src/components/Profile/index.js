@@ -29,7 +29,7 @@ const Profile = ({ user }) => (
                 `${user.username} n'a pas encore de description`}
           </Card.Text>
         </Card.Body>
-        <Card.Body>
+        {/* <Card.Body>
           {!!(user.friends && user.friends.length) ? (
             ""
           ) : (
@@ -38,7 +38,7 @@ const Profile = ({ user }) => (
               Découvre les <Link to="/search">autres membres</Link> :)
             </>
           )}
-        </Card.Body>
+        </Card.Body> */}
       </Card>
     )}
   </Auth.Consumer>
