@@ -67,3 +67,6 @@ export const createPost = ({ userId, authorId, body }) =>
     userId,
     authorId
   });
+
+export const fetchChatMessages = () =>
+  axios.get(`${process.env.REACT_APP_API_URL}/chat`);
