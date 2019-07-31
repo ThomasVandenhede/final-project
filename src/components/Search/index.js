@@ -11,22 +11,46 @@ class Search extends Component {
   constructor(props) {
     super(props);
 
+    this.searchRef = React.createRef();
+
     this.state = {
       users: [],
-      loading: false
+      loading: false,
+      showSuggestions: false
     };
   }
 
-  handleBlur = event => {
-    // this.setState({
-    //   users: []
-    // });
+  componentWillMount() {
+    document.addEventListener("mousedown", this.handleClick, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("mousedown", this.handleClick, false);
+  }
+
+  handleClick = event => {
+    if (this.searchRef && this.searchRef.current.contains(event.target)) {
+      return;
+    }
+
+    this.handleClickOutside();
+  };
+
+  handleClickOutside = () => {
+    this.hideSuggestions();
+  };
+
+  hideSuggestions = () => {
+    this.setState({
+      users: [],
+      showSuggestions: false
+    });
   };
 
   handleFocus = event => {
     const { token, currentUser: me } = this.context;
 
-    this.setState({ loading: true });
+    this.setState({ loading: true, showSuggestions: true });
 
     api
       .fetchUsers({ token })
@@ -45,6 +69,7 @@ class Search extends Component {
   render() {
     return (
       <div
+        ref={this.searchRef}
         style={{ maxWidth: 300 }}
         onFocus={this.handleFocus}
         onBlur={this.handleBlur}
@@ -62,10 +87,14 @@ class Search extends Component {
             </InputGroup.Text>
           </InputGroup.Append>
 
-          <SearchSuggestions
-            users={this.state.users}
-            loading={this.state.loading}
-          />
+          {this.state.showSuggestions && (
+            <SearchSuggestions
+              ref={this.suggestionsRef}
+              users={this.state.users}
+              loading={this.state.loading}
+              onSuggestionClick={this.hideSuggestions}
+            />
+          )}
         </InputGroup>
       </div>
     );

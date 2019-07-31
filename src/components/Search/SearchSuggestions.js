@@ -31,14 +31,12 @@ const UserListItem = styled.li`
   height: 40px;
 `;
 
-const SearchSuggestions = ({ users, loading }) => (
+const SearchSuggestions = ({ users, onSuggestionClick }) => (
   <UserListContainer>
-    <h4>Utilisateurs</h4>
-
     <UserList>
       {users.map(user => (
         <UserListItem key={user.id}>
-          <Link to={`/users/${user.id}`}>
+          <Link to={`/users/${user.id}`} onClick={() => onSuggestionClick()}>
             <UserAvatar user={user} size={30} />
             {user.username}
           </Link>
