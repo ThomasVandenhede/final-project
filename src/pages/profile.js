@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { withRouter } from "react-router-dom";
 import { Container } from "react-bootstrap";
 
@@ -8,103 +8,77 @@ import Profile from "../components/Profile";
 import { Auth } from "../context";
 import * as api from "../api";
 
-class ProfilePage extends Component {
-  constructor(props) {
-    super(props);
+const ProfilePage = ({ match }) => {
+  const [user, setUser] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [loadingPosts, setLoadingPosts] = useState(false);
+  const [isMe, setIsMe] = useState(false);
+  const { currentUser } = useContext(Auth.Context);
 
-    this.state = {
-      user: null,
-      posts: [],
-      loadingUser: false,
-      loadingPosts: false
-    };
-  }
+  useEffect(() => {
+    const loadUser = () => {
+      const userId = match.params.id;
 
-  isMe = () => this.props.match.params.id === this.context.currentUser.id;
-
-  componentDidMount() {
-    this.loadUser();
-    this.loadInitialPosts();
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.props.match.params.id !== prevProps.match.params.id) {
-      this.setState({
-        isMe: this.isMe()
+      return api.fetchUser(userId).then(res => {
+        setUser(res.data);
       });
-      this.loadUser();
-      this.loadInitialPosts();
-    }
-  }
+    };
 
-  loadUser = () => {
-    const userId = this.props.match.params.id;
+    const loadInitialPosts = () => {
+      const userId = match.params.id;
 
-    return api
-      .fetchUser(userId)
-      .then(res => this.setState({ user: res.data, isMe: this.isMe() }));
-  };
+      setLoadingPosts(true);
 
-  loadInitialPosts = () => {
-    const userId = this.props.match.params.id;
+      return api
+        .fetchUserPosts(userId)
+        .then(res => {
+          const posts = res.data.sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
 
-    this.setState({
-      loadingPosts: true
-    });
+          setPosts(posts);
+        })
+        .catch(err => {
+          console.debug(err);
+        })
+        .finally(setLoadingPosts(false));
+    };
 
-    return api
-      .fetchUserPosts(userId)
-      .then(res => {
-        const posts = res.data.sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
+    setIsMe(match.params.id === currentUser.id);
+    loadUser();
+    loadInitialPosts();
+  }, [match.params.id, currentUser.id]);
 
-        this.setState({
-          posts
-        });
-      })
-      .catch(err => {
-        console.debug(err);
-      })
-      .finally(this.setState({ loadingPosts: false }));
-  };
-
-  addPost = post => {
-    const posts = [...this.state.posts, post].sort(
+  const addPost = newPost => {
+    const newPosts = [...posts, newPost].sort(
       (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
 
-    this.setState({
-      posts
-    });
+    setPosts(newPosts);
   };
 
-  render() {
-    return (
-      <Container>
-        {this.state.user && (
-          <div className="row">
-            <div className="col-lg-4 mb-3">
-              <Profile user={this.state.user} isMe={this.state.isMe} />
-            </div>
-
-            <div className="col-lg-8">
-              <PostForm
-                user={this.state.user}
-                addPost={this.addPost}
-                isMe={this.state.isMe}
-              />
-              <PostList posts={this.state.posts} />
-            </div>
+  return (
+    <Container>
+      {user && (
+        <div className="row">
+          <div className="col-lg-4 mb-3">
+            <Profile user={user} />
           </div>
-        )}
-      </Container>
-    );
-  }
-}
 
-ProfilePage.contextType = Auth.Context;
+          <div className="col-lg-8">
+            <PostForm user={user} addPost={addPost} isMe={isMe} />
+            {loadingPosts ? (
+              <p>Chargement des publications...</p>
+            ) : (
+              <PostList posts={posts} />
+            )}
+          </div>
+        </div>
+      )}
+    </Container>
+  );
+};
 
 export default withRouter(ProfilePage);

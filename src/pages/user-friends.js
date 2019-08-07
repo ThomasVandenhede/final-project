@@ -1,16 +1,7 @@
 import React from "react";
 
-import { Auth } from "../context";
-
-const FriendsPage = props => (
-  <Auth.Consumer>
-    {({ isLoggedIn }) => (
-      <div>
-        <p>dfqsdf</p>
-        hello
-      </div>
-    )}
-  </Auth.Consumer>
-);
+const FriendsPage = () => {
+  return <div>My friends.</div>;
+};
 
 export default FriendsPage;

@@ -1,21 +1,16 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { Form, Button } from "react-bootstrap";
 
-class LoginForm extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      formData: {
-        email: "",
-        password: ""
-      },
-      validated: false
-    };
-  }
+const LoginForm = ({ login }) => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: ""
+  });
+  const [validated, setValidated] = useState(false);
 
-  handleSubmit = event => {
+  const handleSubmit = event => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -23,62 +18,54 @@ class LoginForm extends Component {
     if (form.checkValidity() === false) {
       return;
     }
-    this.setState({
-      validated: true
-    });
+    setValidated(true);
 
-    this.props.login(this.state.formData);
+    login(formData);
   };
 
-  render() {
-    return (
-      <Form
-        style={{ padding: "1rem", backgroundColor: "white" }}
-        validated={this.state.validated}
-        onSubmit={this.handleSubmit}
-      >
-        <Form.Group controlId="formBasicEmail">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="Votre email"
-            value={this.state.formData.email}
-            onChange={event => {
-              this.setState({
-                formData: { ...this.state.formData, email: event.target.value }
-              });
-            }}
-          />
-        </Form.Group>
+  return (
+    <Form
+      style={{ padding: "1rem", backgroundColor: "white" }}
+      validated={validated}
+      onSubmit={handleSubmit}
+    >
+      <Form.Group controlId="formBasicEmail">
+        <Form.Label>Email</Form.Label>
+        <Form.Control
+          type="email"
+          placeholder="Votre email"
+          value={formData.email}
+          onChange={event => {
+            setFormData({ ...formData, email: event.target.value });
+          }}
+        />
+      </Form.Group>
 
-        <Form.Group controlId="formBasicPassword">
-          <Form.Label>Mot de Passe</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Votre mot de passe"
-            value={this.state.formData.password}
-            onChange={event => {
-              this.setState({
-                formData: {
-                  ...this.state.formData,
-                  password: event.target.value
-                }
-              });
-            }}
-          />
-        </Form.Group>
-        <Form.Group>
-          <Form.Text className="text-muted">
-            <Link to="/forgot-password">Mot de passe oublié ?</Link>
-          </Form.Text>
-        </Form.Group>
+      <Form.Group controlId="formBasicPassword">
+        <Form.Label>Mot de Passe</Form.Label>
+        <Form.Control
+          type="password"
+          placeholder="Votre mot de passe"
+          value={formData.password}
+          onChange={event => {
+            setFormData({
+              ...formData,
+              password: event.target.value
+            });
+          }}
+        />
+      </Form.Group>
+      <Form.Group>
+        <Form.Text className="text-muted">
+          <Link to="/forgot-password">Mot de passe oublié ?</Link>
+        </Form.Text>
+      </Form.Group>
 
-        <Button type="submit" variant="primary">
-          Connexion
-        </Button>
-      </Form>
-    );
-  }
-}
+      <Button type="submit" variant="primary">
+        Connexion
+      </Button>
+    </Form>
+  );
+};
 
 export default LoginForm;

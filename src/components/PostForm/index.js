@@ -1,21 +1,16 @@
-import React, { Component } from "react";
+import React, { useState, useContext } from "react";
 import { Form, Button } from "react-bootstrap";
 import { withRouter } from "react-router-dom";
 
 import { Auth } from "../../context";
 import * as api from "../../api";
 
-class PostForm extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      message: ""
-    };
-  }
+const PostForm = ({ isMe, user, addPost, location }) => {
+  const [message, setMessage] = useState("");
+  const { currentUser } = useContext(Auth.Context);
 
-  handleSubmit = event => {
-    const { currentUser: author } = this.context;
-    const userId = this.props.location.pathname.split("/").pop();
+  const handleSubmit = event => {
+    const userId = location.pathname.split("/").pop();
 
     event.preventDefault();
     event.stopPropagation();
@@ -23,47 +18,35 @@ class PostForm extends Component {
     api
       .createPost({
         userId,
-        authorId: author.id,
-        body: this.state.message
+        authorId: currentUser.id,
+        body: message
       })
       .then(res => {
         const post = res.data;
 
-        this.setState({ message: "" });
-        this.props.addPost(post);
+        setMessage("");
+        addPost(post);
       });
   };
 
-  render() {
-    const { isMe, user } = this.props;
-
-    return (
-      <Form style={{ marginBottom: "2rem" }} onSubmit={this.handleSubmit}>
-        <Form.Group controlId="exampleForm.ControlTextarea1">
-          <Form.Control
-            as="textarea"
-            rows="2"
-            placeholder={
-              isMe
-                ? "Exprime-toi..."
-                : `Dis quelque chose à ${user.username}...`
-            }
-            value={this.state.message}
-            onChange={event => {
-              this.setState({
-                message: event.target.value
-              });
-            }}
-          />
-        </Form.Group>
-        <Button type="submit" variant="primary">
-          {isMe ? "Publier" : "Partager"}
-        </Button>
-      </Form>
-    );
-  }
-}
-
-PostForm.contextType = Auth.Context;
+  return (
+    <Form style={{ marginBottom: "2rem" }} onSubmit={handleSubmit}>
+      <Form.Group controlId="exampleForm.ControlTextarea1">
+        <Form.Control
+          as="textarea"
+          rows="2"
+          placeholder={
+            isMe ? "Exprime-toi..." : `Dis quelque chose à ${user.username}...`
+          }
+          value={message}
+          onChange={event => setMessage(event.target.value)}
+        />
+      </Form.Group>
+      <Button type="submit" variant="primary">
+        {isMe ? "Publier" : "Partager"}
+      </Button>
+    </Form>
+  );
+};
 
 export default withRouter(PostForm);

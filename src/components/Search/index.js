@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { FormControl, InputGroup } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -7,109 +7,82 @@ import SearchSuggestions from "./SearchSuggestions";
 import { Auth } from "../../context";
 import * as api from "../../api";
 
-class Search extends Component {
-  constructor(props) {
-    super(props);
+const Search = () => {
+  const [users, setUsers] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const { token, currentUser: me } = useContext(Auth.Context);
+  const searchRef = useRef(null);
 
-    this.searchRef = React.createRef();
-
-    this.state = {
-      users: [],
-      showSuggestions: false
+  useEffect(() => {
+    const handleClick = event => {
+      !searchRef.current.contains(event.target) && handleClickOutside();
     };
-  }
 
-  componentWillMount() {
-    document.addEventListener("mousedown", this.handleClick, false);
-  }
+    const handleClickOutside = () => {
+      hideSuggestions();
+    };
 
-  componentWillUnmount() {
-    document.removeEventListener("mousedown", this.handleClick, false);
-  }
+    document.addEventListener("mousedown", handleClick, false);
 
-  handleClick = event => {
-    if (this.searchRef && this.searchRef.current.contains(event.target)) {
-      return;
-    }
+    // cleanup
+    return () => {
+      document.removeEventListener("mousedown", handleClick, false);
+    };
+  }, []);
 
-    this.handleClickOutside();
+  const hideSuggestions = () => {
+    setUsers([]);
+    setShowSuggestions(false);
   };
 
-  handleClickOutside = () => {
-    this.hideSuggestions();
-  };
-
-  hideSuggestions = () => {
-    this.setState({
-      users: [],
-      showSuggestions: false
-    });
-  };
-
-  handleFocus = event => {
-    const { token, currentUser: me } = this.context;
-
-    this.setState({ showSuggestions: true });
+  const handleFocus = () => {
+    setShowSuggestions(true);
 
     api
       .fetchUsers({ token })
       .then(res => {
         if (res.data && res.data.length) {
           const filteredUsers = res.data.filter(user => user.id !== me.id);
-          this.setState({ users: filteredUsers });
+          setUsers(filteredUsers);
         }
       })
       .catch(err => console.debug(err));
   };
 
-  search = event => {
+  const search = event => {
     const q = event.target.value;
-    const { token } = this.context;
 
     api.searchUsers({ q, token }).then(res => {
       const users = res.data;
-      console.log("TCL: Search -> res.data", res.data);
-      this.setState({
-        users
-      });
+      setUsers(users);
     });
   };
 
-  render() {
-    return (
-      <div
-        ref={this.searchRef}
-        style={{ maxWidth: 300 }}
-        onFocus={this.handleFocus}
-        onBlur={this.handleBlur}
-      >
-        <InputGroup>
-          <FormControl
-            type="text"
-            placeholder="Rechercher des membres"
-            aria-label="Rechercher des membres"
-            aria-describedby="btnGroupAddon"
-            onChange={this.search}
+  return (
+    <div ref={searchRef} style={{ maxWidth: 300 }} onFocus={handleFocus}>
+      <InputGroup>
+        <FormControl
+          type="text"
+          placeholder="Rechercher des membres"
+          aria-label="Rechercher des membres"
+          aria-describedby="btnGroupAddon"
+          onChange={search}
+        />
+        <InputGroup.Append>
+          <InputGroup.Text id="btnGroupAddon">
+            <FontAwesomeIcon icon={faSearch} />
+          </InputGroup.Text>
+        </InputGroup.Append>
+
+        {showSuggestions && (
+          <SearchSuggestions
+            users={users}
+            onSuggestionClick={hideSuggestions}
           />
-          <InputGroup.Append>
-            <InputGroup.Text id="btnGroupAddon">
-              <FontAwesomeIcon icon={faSearch} />
-            </InputGroup.Text>
-          </InputGroup.Append>
-
-          {this.state.showSuggestions && (
-            <SearchSuggestions
-              ref={this.suggestionsRef}
-              users={this.state.users}
-              onSuggestionClick={this.hideSuggestions}
-            />
-          )}
-        </InputGroup>
-      </div>
-    );
-  }
-}
-
-Search.contextType = Auth.Context;
+        )}
+      </InputGroup>
+    </div>
+  );
+};
 
 export default Search;

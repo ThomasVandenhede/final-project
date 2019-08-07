@@ -1,83 +1,65 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { withRouter, Link } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 
 import InformationModal from "../components/InformationModal";
 import * as api from "../api";
 
-class PasswordResetPage extends Component {
-  constructor(props) {
-    super(props);
+const PasswordResetPage = ({ location }) => {
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [modalShow, setModalShow] = useState(false);
 
-    this.state = {
-      password: "",
-      passwordConfirm: "",
-      modalShow: false
-    };
-  }
-
-  handleSubmit = event => {
+  const handleSubmit = event => {
     event.preventDefault();
     event.stopPropagation();
 
-    const token = this.props.location.pathname.split("/").pop();
+    const token = location.pathname.split("/").pop();
 
-    if (this.state.password !== this.state.passwordConfirm) {
+    if (password !== passwordConfirm) {
       return;
     }
 
-    api.resetPassword({ password: this.state.password, token }).then(res => {
-      this.setState({ modalShow: true });
-    });
+    api.resetPassword({ password, token }).then(res => setModalShow(true));
   };
 
-  render() {
-    return (
-      <>
-        <InformationModal
-          show={this.state.modalShow}
-          onHide={() => this.setState({ modalShow: false })}
-          content={
-            <>
-              Nouveau mot de passe enregistré avec succès ! <br />
-              <Link to="/">Retour à l'acceuil</Link>
-            </>
-          }
-        />
-        <Form onSubmit={this.handleSubmit}>
-          <Form.Group controlId="formBasicPassword">
-            <Form.Label>Nouveau mot de passe</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Votre mot de passe"
-              value={this.state.password}
-              onChange={event => {
-                this.setState({
-                  password: event.target.value
-                });
-              }}
-            />
-          </Form.Group>
-          <Form.Group controlId="formBasicPassword">
-            <Form.Label>Répéter nouveau mot de passe</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Votre mot de passe"
-              value={this.state.passwordConfirm}
-              onChange={event => {
-                this.setState({
-                  passwordConfirm: event.target.value
-                });
-              }}
-            />
-          </Form.Group>
-          <Button type="submit" variant="primary">
-            Enregistrer
-          </Button>
-        </Form>
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <InformationModal
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        content={
+          <>
+            Nouveau mot de passe enregistré avec succès ! <br />
+            <Link to="/">Retour à l'acceuil</Link>
+          </>
+        }
+      />
+      <Form onSubmit={handleSubmit}>
+        <Form.Group controlId="formBasicPassword">
+          <Form.Label>Nouveau mot de passe</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Votre mot de passe"
+            value={password}
+            onChange={event => setPassword(event.target.value)}
+          />
+        </Form.Group>
+        <Form.Group controlId="formBasicPassword">
+          <Form.Label>Répéter nouveau mot de passe</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Votre mot de passe"
+            value={passwordConfirm}
+            onChange={event => setPasswordConfirm(event.target.value)}
+          />
+        </Form.Group>
+        <Button type="submit" variant="primary">
+          Enregistrer
+        </Button>
+      </Form>
+    </>
+  );
+};
 
 export default withRouter(PasswordResetPage);

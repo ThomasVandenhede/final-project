@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useContext } from "react";
 import { Tabs, Tab } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 
@@ -7,30 +7,23 @@ import SignupForm from "../components/SignupForm";
 
 import { Auth } from "../context";
 
-class AuthPage extends Component {
-  render() {
-    return (
-      <Auth.Consumer>
-        {({ currentUser, isLoggedIn, login, signup }) =>
-          isLoggedIn ? (
-            <Redirect to={`/users/${currentUser.id}`} />
-          ) : (
-            <div>
-              <Tabs defaultActiveKey="login" id="uncontrolled-tab-example">
-                <Tab eventKey="login" title="Connexion">
-                  <LoginForm login={login} />
-                </Tab>
+const AuthPage = () => {
+  const { currentUser, isLoggedIn, login, signup } = useContext(Auth.Context);
+  return isLoggedIn ? (
+    <Redirect to={`/users/${currentUser.id}`} />
+  ) : (
+    <div>
+      <Tabs defaultActiveKey="login" id="uncontrolled-tab-example">
+        <Tab eventKey="login" title="Connexion">
+          <LoginForm login={login} />
+        </Tab>
 
-                <Tab eventKey="signup" title="Inscription">
-                  <SignupForm signup={signup} />
-                </Tab>
-              </Tabs>
-            </div>
-          )
-        }
-      </Auth.Consumer>
-    );
-  }
-}
+        <Tab eventKey="signup" title="Inscription">
+          <SignupForm signup={signup} />
+        </Tab>
+      </Tabs>
+    </div>
+  );
+};
 
 export default AuthPage;

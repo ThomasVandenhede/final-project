@@ -1,4 +1,4 @@
-import React, { Component, createContext } from "react";
+import React, { useState, createContext } from "react";
 import * as api from "../api";
 
 const AuthContext = createContext({
@@ -10,19 +10,18 @@ const AuthContext = createContext({
   logout: () => {} // logout the current user
 });
 
-class AuthProvider extends Component {
-  constructor(props) {
-    super(props);
-    this.state = JSON.parse(localStorage.getItem("auth")) || {
+const AuthProvider = ({ children }) => {
+  const [auth, setAuth] = useState(
+    JSON.parse(localStorage.getItem("auth")) || {
       isLoggedIn: false,
       currentUser: {
         role: "visitor"
       },
       token: ""
-    };
-  }
+    }
+  );
 
-  login = data => {
+  const login = data => {
     return api.login(data).then(res => {
       const { user: currentUser, token } = res.data;
 
@@ -32,11 +31,11 @@ class AuthProvider extends Component {
         token
       };
       localStorage.setItem("auth", JSON.stringify(auth, (key, value) => value));
-      this.setState(auth);
+      setAuth(auth);
     });
   };
 
-  updateUser = ({ data, userId, token }) => {
+  const updateUser = ({ data, userId, token }) => {
     return api.updateUser({ data, userId, token }).then(res => {
       const user = res.data;
 
@@ -49,13 +48,14 @@ class AuthProvider extends Component {
         })
       );
 
-      this.setState({
+      setAuth({
+        ...auth,
         currentUser: user
       });
     });
   };
 
-  signup = data => {
+  const signup = data => {
     return api.createUser(data).then(res => {
       const { user, token } = res.data;
 
@@ -65,14 +65,14 @@ class AuthProvider extends Component {
         token
       };
       localStorage.setItem("auth", JSON.stringify(auth, (key, value) => value));
-      this.setState(auth);
+      setAuth(auth);
     });
   };
 
-  logout = () => {
+  const logout = () => {
     localStorage.removeItem("auth");
 
-    this.setState({
+    setAuth({
       isLoggedIn: false,
       currentUser: {
         role: "visitor"
@@ -81,22 +81,20 @@ class AuthProvider extends Component {
     });
   };
 
-  render() {
-    return (
-      <AuthContext.Provider
-        value={{
-          ...this.state,
-          login: this.login,
-          signup: this.signup,
-          logout: this.logout,
-          updateUser: this.updateUser
-        }}
-      >
-        {this.props.children}
-      </AuthContext.Provider>
-    );
-  }
-}
+  return (
+    <AuthContext.Provider
+      value={{
+        ...auth,
+        login: login,
+        signup: signup,
+        logout: logout,
+        updateUser: updateUser
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
 
 export const Consumer = AuthContext.Consumer;
 export const Provider = AuthProvider;

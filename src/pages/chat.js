@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import io from "socket.io-client";
 
 import ChatUsers from "../components/ChatUsers";
@@ -6,92 +6,80 @@ import ChatBox from "../components/ChatBox";
 import { Auth } from "../context";
 import * as api from "../api";
 
-class ChatPage extends Component {
-  constructor(props) {
-    super(props);
+const ChatPage = () => {
+  // STATE
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [usernames, setUsernames] = useState([]);
+  const [username, setUsername] = useState("");
 
-    this.socket = io(process.env.REACT_APP_API_URL);
-    this.socket.on("chat", data => {
-      this.addMessage(data);
-    });
-    this.socket.on("connectedUsers", data => {
-      this.setState({
-        usernames: [...new Set(data)]
-      });
-    });
+  // CONTEXT
+  const { currentUser } = useContext(Auth.Context);
 
-    this.state = {
-      usernames: [],
-      username: "",
-      message: "",
-      messages: []
+  // REF
+  let socketRef = useRef(
+    io(process.env.REACT_APP_API_URL, { autoConnect: false })
+  );
+
+  // Connect and disconnect socket.io
+  useEffect(() => {
+    const socket = socketRef.current;
+    socket.connect();
+    socket.emit("connected", currentUser.username);
+
+    return () => socket.disconnect();
+  }, [currentUser.username]);
+
+  useEffect(() => {
+    const addMessage = data => {
+      setMessages([...messages, data]);
     };
-  }
-
-  componentDidMount() {
-    this.setState(
-      {
-        username: this.context.currentUser.username
-      },
-      () => {
-        this.socket.emit("connected", this.state.username);
-      }
-    );
-
+    setUsername(currentUser.username);
     api.fetchChatMessages().then(res => {
-      this.setState({ messages: res.data });
+      setMessages(res.data);
     });
-  }
+    socketRef.current.on("chat", data => {
+      addMessage(data);
+    });
+    socketRef.current.on("connectedUsers", data => {
+      setUsernames([...new Set(data)]);
+    });
+  }, []);
 
-  addMessage = data => {
-    this.setState({ messages: [...this.state.messages, data] });
-  };
-
-  sendMessage = event => {
+  const sendMessage = event => {
     event.preventDefault();
-    this.socket.emit("chat", {
-      username: this.state.username,
-      message: this.state.message
+    socketRef.current.emit("chat", {
+      username,
+      message
     });
-    this.setState({ message: "" });
+    setMessage("");
   };
 
-  handleChange = event => {
-    this.setState({ message: event.target.value });
+  const handleChange = event => {
+    setMessage(event.target.value);
   };
 
-  render() {
-    return (
-      <Auth.Consumer>
-        {({ currentUser }) => (
-          <div>
-            <h2>Bienvenue sur le Tchat</h2>
+  return (
+    <div>
+      <h2>Bienvenue sur le Tchat</h2>
 
-            <div className="row">
-              <div className="col-4">
-                <ChatUsers
-                  user={currentUser}
-                  usernames={this.state.usernames}
-                />
-              </div>
+      <div className="row">
+        <div className="col-4">
+          <ChatUsers user={currentUser} usernames={usernames} />
+        </div>
 
-              <div className="col-8">
-                <ChatBox
-                  user={currentUser}
-                  messages={this.state.messages}
-                  message={this.state.message}
-                  onChange={this.handleChange}
-                  onSubmit={this.sendMessage}
-                />
-              </div>
-            </div>
-          </div>
-        )}
-      </Auth.Consumer>
-    );
-  }
-}
-
-ChatPage.contextType = Auth.Context;
+        <div className="col-8">
+          <ChatBox
+            user={currentUser}
+            messages={messages}
+            message={message}
+            onChange={handleChange}
+            onSubmit={sendMessage}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default ChatPage;
